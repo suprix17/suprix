@@ -9,7 +9,7 @@ def bisection(x, y, z):
         return
     A = np.linspace(x, y, 1000000)
     B = [func(i) for i in A]
-    plt.plot(A, B)
+    plt.plot(A, B, label='function')
     t = x
     while True:
         t = (x + y) / 2
