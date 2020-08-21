@@ -30,3 +30,4 @@ b = float(input("enter the A element:\t"))
 e = float(input("enter the tolerance:\t"))
 
 regulaFalsi(a, b, e)
+
