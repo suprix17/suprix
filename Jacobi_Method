@@ -1,0 +1,52 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import sys
+def maxele(mat):
+    s = np.copy(abs(mat))
+    np.fill_diagonal(s, float('-inf'))
+    q = np.unravel_index(s.argmax(), s.shape)
+    return q
+def jacobi(mat):
+    p = np.identity(len(mat))
+    t = maxele(mat)
+    if mat[t[0]][t[0]] == mat[t[1]][t[1]]:
+        if mat[t] > 0:
+            x = np.pi / 4
+        else:
+            x = -np.pi / 4
+    else:
+        x = 0.5 * np.arctan((2 * mat[t]) / (mat[t[0]][t[0]] - mat[t[1]][t[1]]))
+    p[t[0]][t[0]] = np.cos(x)
+    p[t[1]][t[1]] = np.cos(x)
+    p[t[0]][t[1]] = np.sin(x)
+    p[t[1]][t[0]] = -np.sin(x)
+    J = np.transpose(p)
+    k = np.matmul(np.matmul(J, mat), p)
+    print(f"angle is: {x}\n")
+    print(f"J transpose matrix is:\n{J}\n")
+    print(f"array is:\n{mat}\n")
+    print(f"J matrix is:\n{p}\n")
+    print(f"New A matrix is:\n{k}\n")
+    return k
+numpy_array = np.genfromtxt("2.csv", delimiter=",")
+print(f"array is:\n{numpy_array}\n")
+z = np.transpose(numpy_array)
+for i in range(len(numpy_array)):
+    for j in range(len(numpy_array)):
+        if numpy_array[i][j] != z[i][j]:
+            sys.exit("not symmetric\n")
+print('\033[1m' + f"{np.linalg.eigvals(numpy_array)}" + '\033[0m')
+n = float(input("enter tolerance:\t"))
+u = 0
+while True:
+    t = maxele(numpy_array)
+    if abs(numpy_array[t]) < n:
+        print('\033[1m' + f"solution:\n{numpy_array}\n" + '\033[0m')
+        print('\033[1m' + f"eigen values:\n" + '\033[0m')
+        for i in range(len(numpy_array)):
+            print('\033[1m' + f"{numpy_array[i][i]}" + '\033[0m')
+        print('\033[1m' + f"number of iterations:\t{u}" + '\033[0m')
+        break
+    else:
+        numpy_array = jacobi(numpy_array)
+        u += 1
