@@ -1,0 +1,24 @@
+from sympy import *
+import numpy as np
+import matplotlib.pyplot as plt
+a = str(input("enter equation:\t"))
+x = symbols('x')
+func = Lambda(x, eval(a))
+der = Lambda(x, diff(eval(a)))
+def newtonRaphson(x, y, z, e):
+    X = np.linspace(x, y, 10000)
+    Y = [func(i) for i in X]
+    plt.plot(X, Y, label='function')
+    h = func(z) / der(z)
+    while abs(h) > e:
+        h = func(z) / der(z)
+        z = z - h
+    plt.scatter(z, func(z), color='r', label=f'solution is: {z}')
+    print(f'root is: {z}')
+    plt.legend()
+    plt.show()
+i = float(input("enter initial value:\t"))
+f = float(input("enter final value:\t"))
+g = float(input("enter guess value:\t"))
+e = float(input("enter tolerance:\t"))
+newtonRaphson(i, f, g, e)
