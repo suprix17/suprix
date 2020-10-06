@@ -1,0 +1,32 @@
+from sympy import *
+import numpy as np
+import matplotlib.pyplot as plt
+x, y = symbols('x y', real=True)
+e1 = str(input("enter equation:\t"))
+e2 = str(input("enter equation:\t"))
+xk = float(input("enter x value:\t"))
+yk = float(input("enter y value:\t"))
+t = float(input("enter tolerance:\t"))
+while True:
+    xkyk = np.array([xk, yk], dtype='float')
+    print(f'xk and yk matrix:\n{xkyk}')
+    f1 = Lambda((x, y), eval(e1))
+    f2 = Lambda((x, y), eval(e2))
+    df1x = Lambda((x, y), (diff(f1(x,y), x)))
+    df1y = Lambda((x, y), (diff(f1(x,y), y)))
+    df2x = Lambda((x, y), (diff(f2(x,y), x)))
+    df2y = Lambda((x, y), (diff(f2(x,y), y)))
+    J = np.array([[df1x(xk, yk), df1y(xk, yk)],[df2x(xk, yk), df2y(xk, yk)]], dtype='float')
+    f = np.array([f1(xk, yk), f2(xk, yk)], dtype='float')
+    print(f'f matrix:\n{f}')
+    j = np.linalg.inv(J)
+    print(f'J inverse matrix:\n{j}')
+    z = np.matmul(j, f)
+    xkyk = xkyk - z
+    print(f'xk+1 and yk+1 matrix:\n{xkyk}')
+    xk = xkyk[0]
+    yk = xkyk[1]
+    if f1(xk, yk) and f2(xk, yk) < t:
+        print('\033[1m' + f"\nsolution:\t{xkyk}" + '\033[0m')
+        break
+    print("\n")
